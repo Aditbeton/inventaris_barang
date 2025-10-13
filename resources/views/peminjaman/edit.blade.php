@@ -1,4 +1,3 @@
-<!-- untuk edit data -->
 <x-main-layout :title-page="__('Edit Peminjaman')">
     <div class="card">
         <div class="card-body">
