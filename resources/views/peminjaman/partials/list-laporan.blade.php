@@ -8,6 +8,7 @@
              <th>Tanggal Pinjam</th>
              <th>Tanggal Kembali</th>
              <th>Status</th>
+             <th>Tanggal Dikembalikan</th>
          </tr>
      </thead>
      </tr>
@@ -20,23 +21,10 @@
                  <td>{{ $peminjaman->nama_peminjam }}</td>
                  <td>{{ $peminjaman->barang->nama_barang ?? '-' }}</td>
                  <td>{{ $peminjaman->jumlah }}</td>
-                 <td>{{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d-m-Y') }}</td>
-                 <td>{{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d-m-Y') }}</td>
-                 <td>
-                     @php
-                         $badgeClass = 'bg-warning text-dark'; // default dipinjam
-                         if ($peminjaman->status === 'Dikembalikan') {
-                             $badgeClass = 'bg-success';
-                         }
-                         if ($peminjaman->status === 'Terlambat') {
-                             $badgeClass = 'bg-danger';
-                         }
-                     @endphp
-
-                     <span class="badge {{ $badgeClass }}">
-                         {{ $peminjaman->status }}
-                     </span>
-                 </td>
+                 <td>{{ $peminjaman->tanggal_pinjam }}</td>
+                 <td>{{ $peminjaman->tanggal_kembali }}</td>
+                 <td>{{ $peminjaman->status }}</td>
+                 <td>{{ $peminjaman->tanggal_dikembalikan ?? '-'}}</td>
              </tr>
 
          @empty
