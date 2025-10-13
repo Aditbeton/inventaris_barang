@@ -18,8 +18,8 @@
             <td>{{ $peminjaman->nama_peminjam }}</td>
             <td>{{ $peminjaman->barang->nama_barang ?? '-' }}</td>
             <td>{{ $peminjaman->jumlah }}</td>
-            <td>{{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d-m-Y') }}</td>
-            <td>{{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d-m-Y') }}</td>
+            <td>{{ $peminjaman->tanggal_pinjam }}</td>
+            <td>{{ $peminjaman->tanggal_kembali }}</td>
             <td>
                 @php
                     $badgeClass = 'bg-warning text-dark'; // default dipinjam

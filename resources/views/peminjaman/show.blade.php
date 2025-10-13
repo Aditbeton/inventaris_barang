@@ -11,7 +11,7 @@
                     <th>Tanggal Kembali (rencana)</th>
                     <td
                         class="{{ $peminjaman->status == 'Dikembalikan' ? 'text-success' : ($peminjaman->status == 'Terlambat' ? 'text-danger' : '') }}">
-                        {{ $peminjaman->tanggal_kembali }}
+                        {{ $peminjaman->tanggal_kembali }} 
                     </td>
                 </tr>
                 <tr>

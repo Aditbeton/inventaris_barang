@@ -44,15 +44,28 @@
 
  <div class="mb-3">
      <label>Tanggal Pinjam</label>
-     <input type="date" name="tanggal_pinjam" class="form-control"
-         value="{{ old('tanggal_pinjam', $peminjaman->tanggal_pinjam ?? date('Y-m-d')) }}" required>
+     <input type="datetime-local" name="tanggal_pinjam" class="form-control"
+         value="{{ old(
+             'tanggal_pinjam',
+             isset($peminjaman->tanggal_pinjam)
+                 ? \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('Y-m-d\TH:i')
+                 : \Carbon\Carbon::now()->format('Y-m-d\TH:i'),
+         ) }}"
+         required>
+
  </div>
 
  <div class="mb-3">
      <label>Tanggal Kembali (rencana)</label>
-     <input type="date" name="tanggal_kembali" class="form-control"
-         value="{{ old('tanggal_kembali', $peminjaman->tanggal_kembali ?? date('Y-m-d', strtotime('+7 days'))) }}"
+     <input type="datetime-local" name="tanggal_kembali" class="form-control"
+         value="{{ old(
+             'tanggal_kembali',
+             isset($peminjaman->tanggal_kembali)
+                 ? \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('Y-m-d\TH:i')
+                 : \Carbon\Carbon::now()->addDays(7)->format('Y-m-d\TH:i'),
+         ) }}"
          required>
+
  </div>
 
  <button type="submit" class="btn btn-primary">{{ $tombol }}</button>

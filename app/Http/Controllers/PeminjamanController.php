@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
 class PeminjamanController extends Controller
 {
     /**
@@ -50,15 +49,16 @@ class PeminjamanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+            'tanggal_pinjam' => 'required|date_format:Y-m-d\TH:i',
+            'tanggal_kembali' => 'required|date_format:Y-m-d\TH:i|after_or_equal:tanggal_pinjam',
             'nama_peminjam' => 'required|string|max:100',
             'barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
-
+        // ubah format sebelum disimpan
+        $validated['tanggal_pinjam'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_pinjam)->format('Y-m-d H:i:s');
+        $validated['tanggal_kembali'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_kembali)->format('Y-m-d H:i:s');
         $validated['status'] = 'Dipinjam';
 
         Peminjaman::create($validated);
@@ -93,17 +93,19 @@ class PeminjamanController extends Controller
     public function update(Request $request, Peminjaman $peminjaman)
     {
         $request->validate([
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+            'tanggal_pinjam' => 'required|date_format:Y-m-d\TH:i',
+            'tanggal_kembali' => 'required|date_format:Y-m-d\TH:i|after_or_equal:tanggal_pinjam',
             'nama_peminjam' => 'required|string|max:100',
             'barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
         ]);
 
-        // Boleh edit semua data (termasuk perpanjang tanggal)
-        $peminjaman->update($request->all());
+        $data = $request->all();
+        $data['tanggal_pinjam'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_pinjam)->format('Y-m-d H:i:s');
+        $data['tanggal_kembali'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_kembali)->format('Y-m-d H:i:s');
 
-        // Jika sebelumnya sudah "Terlambat" tapi diperpanjang ke tanggal depan → ubah jadi "Dipinjam" lagi
+        $peminjaman->update($data);
+
         if (
             $peminjaman->status === 'Terlambat' &&
             Carbon::parse($peminjaman->tanggal_kembali)->isFuture()
@@ -114,6 +116,7 @@ class PeminjamanController extends Controller
         return redirect()->route('peminjaman.index')
             ->with('success', 'Data peminjaman berhasil diupdate');
     }
+
 
     /**
      * 🔁 Ubah status jadi "Dikembalikan"
