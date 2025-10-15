@@ -8,6 +8,7 @@
             <th>Lokasi</th>
             <th>Jumlah</th>
             <th>Kondisi</th>
+            <th>Sumber Dana</th>
             <th>&nbsp;</th>
         </tr>
     </x-slot>
@@ -31,6 +32,9 @@
                     }
                 @endphp
                 <span class="badge {{ $badegClass }}">{{ $barang->kondisi }}</span>
+            </td>
+            <td>
+                <span class="badge bg-info text-dark">{{ $barang->sumber_dana }}</span>
             </td>
             <td class="text-end">
                 @can('manage barang')

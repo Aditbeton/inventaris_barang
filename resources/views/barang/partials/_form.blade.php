@@ -45,8 +45,22 @@
     </div>
 </div>
 
-<div class="mb-3">
-    <x-form-input label="Gambar Barang" name="gambar" type="file" />
+<div class="row mb-3">
+    <div class="col-md-6">
+        @php
+            $sumber_dana = [
+                ['sumber_dana' => 'Baik'],
+                ['sumber_dana' => 'Rusak Ringan'],
+                ['sumber_dana' => 'Rusak Berat'],
+            ];
+        @endphp
+        <x-form-select label="Sumber Dana" name="sumber_dana" :value="$barang->sumber_dana" :option-data="$sumber_dana"
+            option-label="sumber_dana" option-value="sumber_dana" />
+    </div>
+    <div class="col-md-6">
+        <x-form-input label="Gambar Barang" name="gambar" type="file" />
+    </div>
+</div>
 </div>
 
 <div class="mt-4">

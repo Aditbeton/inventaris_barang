@@ -61,6 +61,7 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'sumber_dana' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
             'tanggal_pengadaan' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
         ]);
@@ -110,6 +111,7 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'sumber_dana' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
             'tanggal_pengadaan' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
         ]);

@@ -44,6 +44,12 @@
             </td>
         </tr>
         <tr>
+            <th>Sumber Dana</th>
+            <td>
+                <span class="badge bg-info text-dark">{{ $barang->sumber_dana }}</span>
+            </td>
+        </tr>
+        <tr>
             <th>Tanggal Pengadaan</th>
             <td>{{ \Carbon\Carbon::parse($barang->tanggal_pengadaan)->translatedFormat('d F Y') }}</td>
         </tr>

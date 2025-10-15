@@ -17,6 +17,7 @@ class Barang extends Model
         'jumlah',
         'satuan',
         'kondisi',
+        'sumber_dana',
         'tanggal_pengadaan',
         'gambar',
     ];
