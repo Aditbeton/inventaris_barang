@@ -15,29 +15,19 @@ class KategoriSeeder extends Seeder
     {
         DB::table('kategoris')->insert([
             [
-                'nama_kategori' => 'Elektronik',
+                'nama_kategori' => 'PC',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'nama_kategori' => 'Elektronik',
+                'created at' => now(),
+                'updated at' => now()
             ],
             [
                 'nama_kategori' => 'Mebel & Furnitur',
                 'created at' => now(),
                 'updated at' => now()
-            ],
-            [
-                'nama_kategori' => 'Alat Tulis Kantor (ATK)',
-                'created at' => now(),
-                'updated at' => now()
-            ],
-            [
-                'nama_kategori' => 'Aset Gedung',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'nama_kategori' => 'Manusia',
-                'created_at' => now(),
-                'updated_at' => now()
             ],
         ]);
     }

@@ -34,6 +34,7 @@ class RolePermissionSeeder extends Seeder
             'view lokasi',
             'manage peminjaman',
             'view peminjaman',
+            'delete peminjaman',
         ]);
         $adminRole->givePermissionTo(Permission::all());
     }

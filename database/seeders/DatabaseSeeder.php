@@ -26,15 +26,10 @@ class DatabaseSeeder extends Seeder
         ]);
          $admin = User::factory()->create([
             'name' => 'Lapet',
-            'email' => '232410198@smkn1padaherang.sch.id',
+            'email' => 'admin@mail.com',
         ]);
 
         $admin->assignRole('admin');
         $petugas->assignRole('petugas');
-/*
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]); */
     }
 }

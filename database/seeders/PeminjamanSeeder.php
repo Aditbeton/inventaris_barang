@@ -15,14 +15,13 @@ class PeminjamanSeeder extends Seeder
      */
     public function run(): void
     {
-        // pastiin ada minimal 1 barang di tabel barang
         $barang = Barang::first();
         if (!$barang) {
             $barang = Barang::create([
                 'nama_barang' => 'Laptop ASUS',
                 'stok' => 10,
-                'kategori_id' => 1, // sesuaikan sama id kategori yg ada
-                'lokasi_id' => 1,   // sesuaikan sama id lokasi yg ada
+                'kategori_id' => 1,
+                'lokasi_id' => 1,
             ]);
         }
 
