@@ -22,7 +22,7 @@
             <td>{{ $peminjaman->tanggal_kembali }}</td>
             <td>
                 @php
-                    $badgeClass = 'bg-warning text-dark'; // default dipinjam
+                    $badgeClass = 'bg-warning text-dark'; 
                     if ($peminjaman->status === 'Dikembalikan') {
                         $badgeClass = 'bg-success';
                     }

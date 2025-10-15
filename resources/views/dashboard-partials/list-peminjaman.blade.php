@@ -3,20 +3,20 @@
         $kondisis = [
             [
                 'judul' => 'Dikembalikan',
-                'jumlah' => $jumlahBarang,
-                'kondisi' => $kondisiBaik,
+                'jumlah' => $jumlahPeminjaman,
+                'kondisi' => $statusDikembalikan,
                 'color' => 'success',
             ],
             [
                 'judul' => 'Dipinjam',
-                'jumlah' => $jumlahBarang,
-                'kondisi' => $kondisiRusakRingan,
+                'jumlah' => $jumlahPeminjaman,
+                'kondisi' => $statusDipinjam,
                 'color' => 'warning',
             ],
             [
                 'judul' => 'Terlambat',
-                'jumlah' => $jumlahBarang,
-                'kondisi' => $kondisiRusakBerat,
+                'jumlah' => $jumlahPeminjaman,
+                'kondisi' => $statusTerlambat,
                 'color' => 'danger',
             ],
         ];

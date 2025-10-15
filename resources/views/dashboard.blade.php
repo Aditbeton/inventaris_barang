@@ -41,7 +41,7 @@
                     <h6>5 Peminjam Terakhir Ditambahkan</h6>
                 </div>
                 <div class="card-body table-responsive">
-                    @include('dashboard-partials.list-barang-terbaru')
+                    @include('dashboard-partials.list-peminjaman-terbaru')
                 </div>
             </div>
         </div>
