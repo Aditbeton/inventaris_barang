@@ -146,15 +146,22 @@ class BarangController extends Controller implements HasMiddleware
     {
         $barangs = Barang::with(['kategori', 'lokasi'])->get();
 
+        $kondisiBaik = Barang::where('kondisi', 'Baik')->count();
+        $kondisiRusakRingan = Barang::where('kondisi', 'Rusak Ringan')->count();
+        $kondisiRusakBerat = Barang::where('kondisi', 'Rusak Berat')->count();
+
         $data = [
             'title' => 'Laporan Data Barang Inventaris',
             'date' => date('d F Y'),
-            'barangs' => $barangs
+            'barangs' => $barangs,
+            'kondisiBaik' => $kondisiBaik,
+            'kondisiRusakRingan' => $kondisiRusakRingan,
+            'kondisiRusakBerat' => $kondisiRusakBerat,
         ];
 
         $pdf = Pdf::loadView('barang.laporan', $data);
 
+
         return $pdf->stream('laporan-inventaris-barang.pdf');
     }
-
 }

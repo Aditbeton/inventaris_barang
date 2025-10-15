@@ -13,7 +13,7 @@
             <tr>
                 <td>{{ $peminjaman->nama_peminjam }}</td>
                 <td>{{ $peminjaman->barang->nama_barang ?? '-' }}</td>
-                <td>{{ $peminjaman->jumlah }}</td>
+                <td class="text-center">{{ $peminjaman->jumlah }}</td>
                 <td>{{ $peminjaman->tanggal_pinjam }}</td>
                 <td>
                     @php

@@ -24,7 +24,7 @@
                  <td>{{ $peminjaman->tanggal_pinjam }}</td>
                  <td>{{ $peminjaman->tanggal_kembali }}</td>
                  <td>{{ $peminjaman->status }}</td>
-                 <td>{{ $peminjaman->tanggal_dikembalikan ?? '-'}}</td>
+                 <td>{{ $peminjaman->tanggal_dikembalikan ?? '-' }}</td>
              </tr>
 
          @empty
@@ -34,3 +34,9 @@
          @endforelse
      </tbody>
  </table>
+ <h4 style="margin-top: 20px;">Rekap Status Peminjam</h4>
+ <p>
+     <strong>Dikembalikan:</strong> {{ $totalDikembalikan ?? 0 }}<br>
+     <strong>Dipinjam:</strong> {{ $totalDipinjam ?? 0 }}<br>
+     <strong>Terlambat:</strong> {{ $totalTerlambat ?? 0 }}
+ </p>

@@ -165,18 +165,23 @@ class PeminjamanController extends Controller
 
     public function laporpin()
     {
-        $Peminjamans = Peminjaman::with(['kategori', 'lokasi', 'barang'])->get();
+        $peminjamans = Peminjaman::with('barang')->orderBy('tanggal_pinjam', 'desc')->get();
+
+        $totalDipinjam = $peminjamans->where('status', 'Dipinjam')->count();
+        $totalTerlambat = $peminjamans->where('status', 'Terlambat')->count();
+        $totalDikembalikan = $peminjamans->where('status', 'Dikembalikan')->count();
 
         $data = [
             'title' => 'Laporan Data Peminjaman Barang',
             'date' => date('d F Y'),
-            'peminjamans' => $Peminjamans
+            'peminjamans' => $peminjamans,
+            'totalDipinjam' => $totalDipinjam,
+            'totalTerlambat' => $totalTerlambat,
+            'totalDikembalikan' => $totalDikembalikan,
         ];
 
         $pdf = Pdf::loadView('peminjaman.laporan', $data);
 
         return $pdf->stream('laporan-peminjaman-barang.pdf');
     }
-
-
 }
