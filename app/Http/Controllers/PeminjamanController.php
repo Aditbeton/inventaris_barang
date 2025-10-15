@@ -17,7 +17,6 @@ class PeminjamanController extends Controller
      */
     public function index(Request $request)
     {
-        // 🔁 Update status otomatis jadi "Terlambat" jika sudah lewat tanggal kembali
         Peminjaman::where('status', 'Dipinjam')
             ->where('tanggal_kembali', '<', Carbon::now())
             ->update(['status' => 'Terlambat']);
@@ -26,7 +25,6 @@ class PeminjamanController extends Controller
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('nama_peminjam', 'like', '%' . $request->search . '%')
                     ->orWhereHas('barang', function ($q) use ($request) {
-                        // ✅ ganti kolom 'nama' ke 'nama_barang' sesuai tabel barang kamu
                         $q->where('nama_barang', 'like', '%' . $request->search . '%');
                     });
             })
@@ -55,13 +53,24 @@ class PeminjamanController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
         ]);
+        $barang = Barang::findOrFail($request->barang_id);
 
-        // ubah format sebelum disimpan
+        if ($request->jumlah > $barang->jumlah_tersedia) {
+            return back()
+                ->withInput()
+                ->with('error', 'Jumlah yang diminta melebihi jumlah tersedia! Sisa tersedia: ' . $barang->jumlah_tersedia . ' ' . $barang->satuan);
+        }
+
         $validated['tanggal_pinjam'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_pinjam)->format('Y-m-d H:i:s');
         $validated['tanggal_kembali'] = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_kembali)->format('Y-m-d H:i:s');
         $validated['status'] = 'Dipinjam';
 
         Peminjaman::create($validated);
+
+        $barang->update([
+            'jumlah_dipinjam' => $barang->jumlah_dipinjam + $request->jumlah,
+            'jumlah_tersedia' => $barang->jumlah_tersedia - $request->jumlah,
+        ]);
 
         return redirect()->route('peminjaman.index')
             ->with('success', 'Data peminjaman berhasil ditambahkan');
