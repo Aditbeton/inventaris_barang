@@ -8,6 +8,7 @@
              <th>Lokasi</th>
              <th>Jumlah</th>
              <th>Kondisi</th>
+             <th>Sumber Dana</th>
              <th>Tanggal Pengadaan</th>
          </tr>
      </thead>
@@ -22,6 +23,7 @@
                  <td>{{ $barang->lokasi->nama_lokasi }}</td>
                  <td>{{ $barang->jumlah }} {{ $barang->satuan }}</td>
                  <td>{{ $barang->kondisi }}</td>
+                 <td>{{ $barang->sumber_dana }}</td>
                  <td>
                      {{ date('d-m-Y', strtotime($barang->tanggal_pengadaan)) }}
                  </td>
