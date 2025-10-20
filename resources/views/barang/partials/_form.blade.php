@@ -49,9 +49,9 @@
     <div class="col-md-6">
         @php
             $sumber_dana = [
-                ['sumber_dana' => 'Baik'],
-                ['sumber_dana' => 'Rusak Ringan'],
-                ['sumber_dana' => 'Rusak Berat'],
+                ['sumber_dana' => 'Swadaya'],
+                ['sumber_dana' => 'Pemerintah'],
+                ['sumber_dana' => 'Donatur'],
             ];
         @endphp
         <x-form-select label="Sumber Dana" name="sumber_dana" :value="$barang->sumber_dana" :option-data="$sumber_dana"
