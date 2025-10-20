@@ -27,8 +27,13 @@ class BarangController extends Controller implements HasMiddleware
 
         $barangs = Barang::with(['kategori', 'lokasi'])
             ->when($search, function ($query, $search) {
-                $query->where('nama_barang', 'like', '%' . $search . '%')
-                    ->orWhere('kode_barang', 'like', '%' . $search . '%');
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_barang', 'like', '%' . $search . '%')
+                        ->orWhere('kode_barang', 'like', '%' . $search . '%')
+                        ->orWhereHas('lokasi', function ($lokasi) use ($search) {
+                            $lokasi->where('nama_lokasi', 'like', '%' . $search . '%');
+                        });
+                });
             })
             ->latest()->paginate(10)->withQueryString();
 
@@ -61,7 +66,7 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
-            'sumber_dana' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'sumber_dana' => 'required|in:Swadaya,Pemerintah,Donatur',
             'tanggal_pengadaan' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
         ]);

@@ -4,6 +4,6 @@
         <x-tombol-cetak label="Cetak Laporan Barang" href="{{ route('barang.laporan') }}" />
     </div>
     <div class="col">
-        <x-form-search placeholder="Cari nama/kode barang..." />
+        <x-form-search placeholder="Cari berdasarkan nama/kode/lokasi barang..." />
     </div>
 </div>

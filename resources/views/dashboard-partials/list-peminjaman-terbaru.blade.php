@@ -33,7 +33,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="3" class="text-center">Belum ada data barang.</td>
+                <td colspan="5" class="text-center">Belum ada data peminjaman.</td>
             </tr>
         @endforelse
     </tbody>
