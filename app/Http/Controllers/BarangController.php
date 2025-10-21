@@ -1,0 +1,188 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\Lokasi;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Storage;        /* tandain */
+
+class BarangController extends Controller implements HasMiddleware
+{
+    public static function middleware()
+    {
+        return [
+            new Middleware('permission:manage barang', except: ['destroy']),
+            new Middleware('permission:delete barang', only: ['destroy']),
+        ];
+    }
+
+    public function index(Request $request)
+    {
+        $search = $request->search;
+
+        $barangs = Barang::with(['kategori', 'lokasi'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_barang', 'like', '%'.$search.'%')
+                        ->orWhere('kode_barang', 'like', '%'.$search.'%')
+                        ->orWhereHas('lokasi', function ($lokasi) use ($search) {
+                            $lokasi->where('nama_lokasi', 'like', '%'.$search.'%');
+                        });
+                });
+            })
+            ->latest()->paginate(10)->withQueryString();
+
+        return view('barang.index', compact('barangs'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $kategori = Kategori::all();
+        $lokasi = Lokasi::all();
+        $barang = new Barang;
+
+        return view('barang.create', compact('barang', 'kategori', 'lokasi'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'kode_barang' => 'required|string|max:50|unique:barangs,kode_barang',
+            'nama_barang' => 'required|string|max:150|regex:/^[^0-9]*$/',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
+            'jumlah' => 'required|integer|min:0',
+            'satuan' => 'required|string|max:20',
+            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'sumber_dana' => 'required|in:Swadaya,Pemerintah,Donatur',
+            'tanggal_pengadaan' => 'required|date',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+        ], [
+            'nama_barang.regex' => 'Nama barang tidak boleh mengandung angka.',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            $validated['gambar'] = $request->file('gambar')->store('barang', 'gambar-barang'); /* tandain */
+        }
+
+        Barang::create($validated);
+
+        return redirect()->route('barang.index')
+            ->with('success', 'Data barang berhasil ditambahkan.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Barang $barang)
+    {
+        $barang->load(['kategori', 'lokasi']);
+
+        return view('barang.show', compact('barang'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Barang $barang)
+    {
+        $kategori = Kategori::all();
+        $lokasi = Lokasi::all();
+
+        return view('barang.edit', compact('barang', 'kategori', 'lokasi'));
+
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Barang $barang)
+    {
+        $validated = $request->validate([
+            'kode_barang' => 'required|string|max:50|unique:barangs,kode_barang,'.$barang->id,
+            'nama_barang' => 'required|string|max:150|regex:/^[^0-9]*$/',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
+            'jumlah' => 'required|integer|min:0',
+            'satuan' => 'required|string|max:20',
+            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'sumber_dana' => 'required|in:Swadaya,Pemerintah,Donatur',
+            'tanggal_pengadaan' => 'required|date',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            if ($barang->gambar) {
+                Storage::disk('gambar-barang')->delete($barang->gambar);
+            }
+
+            $validated['gambar'] = $request->file('gambar')->store(null, 'gambar-barang');
+        }
+
+        $barang->update($validated);
+
+        return redirect()->route('barang.index')->with('success', 'Data barang berhasil diperbarui.');
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Barang $barang)
+    {
+        if ($barang->gambar) {
+            Storage::disk('gambar-barang')->delete($barang->gambar);
+        }
+
+        $barang->delete();
+
+        return redirect()->route('barang.index')->with('success', 'Data barang berhasil dihapus.');
+    }
+
+    public function cetakLaporan()
+    {
+        $barangs = Barang::with(['kategori', 'lokasi'])->get();
+
+        $kondisiBaik = Barang::where('kondisi', 'Baik')->count();
+        $kondisiRusakRingan = Barang::where('kondisi', 'Rusak Ringan')->count();
+        $kondisiRusakBerat = Barang::where('kondisi', 'Rusak Berat')->count();
+
+        $data = [
+            'title' => 'Laporan Data Barang Inventaris',
+            'date' => date('d F Y'),
+            'barangs' => $barangs,
+            'kondisiBaik' => $kondisiBaik,
+            'kondisiRusakRingan' => $kondisiRusakRingan,
+            'kondisiRusakBerat' => $kondisiRusakBerat,
+        ];
+
+        $pdf = Pdf::loadView('barang.laporan', $data);
+
+        return $pdf->stream('laporan-inventaris-barang.pdf');
+    }
+
+    public function barangPerLokasi($id)
+    {
+        $lokasi = Lokasi::findOrFail($id);
+
+        $barangs = Barang::where('lokasi_id', $id)
+            ->with(['kategori', 'lokasi'])
+            ->paginate(10);
+
+        return view('lokasi.partials.list-barang', [
+            'barangs' => $barangs,
+            'nama_lokasi' => $lokasi->nama_lokasi,
+        ]);
+    }
+}
